@@ -108,9 +108,9 @@ class Trainer(BaseExecutor):
             self.grad_scaler = torch.cuda.amp.GradScaler()
 
     def train(self):
-        self.train_iter = iter(self.train_dataloader)
-        self._invoke_callback("before_train")
-        self.model.cuda()
+        self.train_iter = iter(self.train_dataloader)           #训练数据迭代器
+        self._invoke_callback("before_train")                   #调用before_train回调【【？
+        self.model.cuda()           #self.model是BaseExp的model属性，BaseExp的model属性是在BaseExp的__init__方法中初始化的
         self.model.train()
         self.optimizer_to(self.optimizer, next(self.model.parameters()).device)
         start_epoch = self.epoch
@@ -118,7 +118,7 @@ class Trainer(BaseExecutor):
             self.epoch = epoch
             self.model.train()
             self.train_epoch(epoch)
-        self._invoke_callback("after_train")
+        self._invoke_callback("after_train")                    #调用after_train回调【【？
 
     def train_epoch(self, epoch):
         self._invoke_callback("before_epoch", epoch)

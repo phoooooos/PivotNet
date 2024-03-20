@@ -143,18 +143,18 @@ class BaseCli:
         trainer = Trainer(exp=exp, callbacks=callbacks, logger=logger, evaluator=evaluator)
         return trainer
 
-    def executor(self):
-        if self.args.eval:
+    def executor(self):                                     
+        if self.args.eval:                                      #仅eval
             self.get_evaluator().eval()
-        elif self.args.train_and_eval:
+        elif self.args.train_and_eval:                          #train+eval
             evaluator = self.get_evaluator(callbacks=[])
             self.get_trainer(evaluator=evaluator).train()
-        else:
-            self.get_trainer().train()
+        else:                                                   #仅train
+            self.get_trainer().train()  
 
     def dispatch(self, executor_func):
         is_master = self.env.global_rank() == 0
-        with ShareFSUUIDNameServer(is_master) as ns:
+        with ShareFSUUIDNameServer(is_master) as ns:    
             self.env.set_master_uri(ns)
             self.env.setup_nccl()
             if self.env.local_rank() == 0:
@@ -166,10 +166,10 @@ class BaseCli:
                     env_copy["LOCAL_RANK"] = f"{local_rank}"
                     subprocess.Popen(command, env=env_copy)
             self.env.init_dist()
-        executor_func()
+        executor_func()                 #执行executor函数
 
     def run(self):
-        self.dispatch(self.executor)
+        self.dispatch(self.executor)                #把executor函数传入dispatch函数中 
 
 
 class MapMasterCli(BaseCli):

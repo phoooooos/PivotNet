@@ -16,7 +16,7 @@ from mapmaster.utils.misc import get_param_groups, is_distributed
 
 class EXPConfig:
     
-    DATA_ROOT = "/data/dataset/public/nuScenes/"
+    DATA_ROOT = "/data/dataset/public/nuScenes/"                            #数据集位置
     IMAGE_SHAPE = (900, 1600)
 
     map_conf = dict(
