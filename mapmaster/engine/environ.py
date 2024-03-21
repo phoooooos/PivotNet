@@ -11,12 +11,14 @@ from mapmaster.utils.env import get_root_dir
 from mapmaster.utils.misc import parse_devices
 from mapmaster.engine.callbacks import Callback
 
+#主要是设置分布式训练环境
+
 
 __all__ = ["ShareFSUUIDNameServer", "RlaunchReplicaEnv"]
 output_root_dir = os.path.join(get_root_dir(), "outputs")
 
 
-class ShareFSUUIDNameServer:
+class ShareFSUUIDNameServer:                    #Share File System UUID Name Server
     def __init__(self, is_master):
         self.exp_id = self._get_exp_id()
         self.is_master = is_master
@@ -61,7 +63,7 @@ class ShareFSUUIDNameServer:
                 time.sleep(5)
 
 
-class _DDPEnv(Callback):
+class _DDPEnv(Callback):        #Distributed Data Parallel Environment【【
     def __init__(self, sync_bn=0, devices=None, find_unused_parameters=False):
         if devices:
             devices = parse_devices(devices)
@@ -113,7 +115,7 @@ class _DDPEnv(Callback):
         dist.barrier()
 
 
-class RlaunchReplicaEnv(_DDPEnv):
+class RlaunchReplicaEnv(_DDPEnv):           
     def __init__(self, sync_bn=0, devices=None, find_unused_parameters=False):
         super().__init__(sync_bn, devices, find_unused_parameters)
 

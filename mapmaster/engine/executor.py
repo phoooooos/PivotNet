@@ -16,7 +16,7 @@ class Callback:
     enabled_rank = None
 
     def setup(self, executor):
-        pass
+        pass        
 
     def load_checkpoint(self, executor):
         pass
@@ -25,7 +25,7 @@ class Callback:
         pass
 
     def before_train(self, executor):
-        pass
+        pass            #在train()方法中调用 只有pass语句，但是可以在子类中重写
 
     def before_epoch(self, executor, epoch: int):
         pass
@@ -54,7 +54,7 @@ class BaseExecutor:
         self.exp = exp
         self.logger = logger
         self.callbacks = callbacks
-        self._invoke_callback("setup")
+        self._invoke_callback("setup")        
 
         self.epoch = 0
         self.global_step = 0
@@ -108,19 +108,19 @@ class Trainer(BaseExecutor):
             self.grad_scaler = torch.cuda.amp.GradScaler()
 
     def train(self):
-        self.train_iter = iter(self.train_dataloader)           #训练数据迭代器
-        self._invoke_callback("before_train")                   #调用before_train回调【【？
-        self.model.cuda()           #self.model是BaseExp的model属性，BaseExp的model属性是在BaseExp的__init__方法中初始化的
-        self.model.train()
-        self.optimizer_to(self.optimizer, next(self.model.parameters()).device)
-        start_epoch = self.epoch
-        for epoch in range(start_epoch, self.exp.max_epoch):
+        self.train_iter = iter(self.train_dataloader)           #设置 训练数据迭代器，在train_epoch()方法中使用
+        self._invoke_callback("before_train")                   #调用before_train回调【【？ 
+        self.model.cuda()           #self.model是BaseExp的model属性，BaseExp的model属性是在BaseExp的__init__方法中初始化的 cuda()是将模型转移到GPU上【【
+        self.model.train()          #将模型设置为训练模式【【
+        self.optimizer_to(self.optimizer, next(self.model.parameters()).device) #将optimizer的参数转移到device上【【
+        start_epoch = self.epoch        #self.epoch是BaseExecutor的epoch属性，BaseExecutor的epoch属性是在BaseExecutor的__init__方法中初始化的
+        for epoch in range(start_epoch, self.exp.max_epoch):        #在每个epoch上训练
             self.epoch = epoch
-            self.model.train()
-            self.train_epoch(epoch)
+            self.model.train()              #model.train()是将模型设置为训练模式【【
+            self.train_epoch(epoch)         #训练一个epoch
         self._invoke_callback("after_train")                    #调用after_train回调【【？
 
-    def train_epoch(self, epoch):
+    def train_epoch(self, epoch):                           #用来在train()方法中训练一个epoch
         self._invoke_callback("before_epoch", epoch)
         sampler = self.train_dataloader.sampler
         if hasattr(sampler, "set_epoch"):
@@ -128,7 +128,7 @@ class Trainer(BaseExecutor):
         for step in range(len(self.train_dataloader)):
             try:
                 data = next(self.train_iter)
-            except StopIteration:
+            except StopIteration:   
                 self.train_iter = iter(self.train_dataloader)
                 data = next(self.train_iter)
             self.train_step(data, step)
@@ -140,7 +140,7 @@ class Trainer(BaseExecutor):
         self._invoke_callback("before_step", step, data)
         self.lr_scheduler.step(self.global_step)
         self.model.train()
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad()                  #清空梯度 self.optimizer是BaseExp的optimizer属性，BaseExp的optimizer属性是在BaseExp的__init__方法中初始化的
         if not self.use_amp:
             ret = self.exp.training_step(data)
         else:
@@ -173,7 +173,7 @@ class Trainer(BaseExecutor):
     def optimizer_to(optim, device):
         for param in optim.state.values():
             # Not sure there are any global tensors in the state dict
-            if isinstance(param, torch.Tensor):
+            if isinstance(param, torch.Tensor):                         #判断param是否是torch.Tensor类型
                 param.data = param.data.to(device)
                 if param._grad is not None:
                     param._grad.data = param._grad.data.to(device)

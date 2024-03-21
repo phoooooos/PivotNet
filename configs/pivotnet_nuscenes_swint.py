@@ -14,7 +14,9 @@ from mapmaster.dataset.transform import Resize, Normalize, ToTensor_Pivot
 from mapmaster.utils.misc import get_param_groups, is_distributed
 
 
-class EXPConfig:
+class EXPConfig:    #描述{数据集,模型,优化器,调度器,指标}的配置，加载到Exp类中
+    # 包括的条目有 DATA_ROOT,IAMGE_SHAPE,map_conf,pivot_conf,dataset_setup,model_setup,optimizer_setup,scheduler_setup,metric_setup,VAL_TXT
+    # 其中model_setup描述了模型的配置
     
     DATA_ROOT = "/data/dataset/public/nuScenes/"                            #数据集位置
     IMAGE_SHAPE = (900, 1600)
@@ -57,7 +59,7 @@ class EXPConfig:
             fpn_kwargs=None,
         ),
         bev_decoder=dict(
-            arch_name="ipm_deformable_transformer",
+            arch_name="ipm_deformable_transformer",         #这块想看一下，这个可变尺寸transformer
             net_kwargs=dict(
                 in_channels=[384, 768],
                 src_shape=[(32, 336), (16, 168)],
@@ -297,14 +299,14 @@ class Exp(BaseExp):
         outputs = self.model(batch)
         return self.model.module.post_processor(outputs["outputs"], batch["targets"])
 
-    def test_step(self, batch):
+    def test_step(self, batch):                             #测试,在train_epoch()方法中调用
         with torch.no_grad():
             batch["images"] = batch["images"].float().cuda()
             outputs = self.model(batch)
             results, dt_masks = self.model.module.post_processor(outputs["outputs"])
         self.save_results(batch["extra_infos"]["token"], results, dt_masks)
 
-    def save_results(self, tokens, results, dt_masks):
+    def save_results(self, tokens, results, dt_masks):      #Exp的保存结果方法，在test_step()方法中调用
         if self.evaluation_save_dir is None:
             self.evaluation_save_dir = os.path.join(self.output_dir, "evaluation", "results")
             if not os.path.exists(self.evaluation_save_dir):

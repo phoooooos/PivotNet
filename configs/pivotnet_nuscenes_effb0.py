@@ -19,7 +19,7 @@ EXPConfig.model_setup["im_backbone"] = dict(
 
 EXPConfig.model_setup['bev_decoder']["net_kwargs"].update(
     dict(
-        in_channels=[112, 320],
+        in_channels=[112, 320],             #更新bev_decoder(可变尺寸transformer)的输入尺寸
     )
 )
 

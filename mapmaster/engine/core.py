@@ -12,7 +12,8 @@ from mapmaster.utils.env import collect_env_info, get_root_dir
 from mapmaster.utils.misc import setup_logger, sanitize_filename, PyDecorator, all_gather_object
 
 
-__all__ = ["BaseCli", "BeMapNetCli"]
+
+__all__ = ["BaseCli", "BeMapNetCli"]    
 
 
 class BaseCli:
@@ -25,7 +26,7 @@ class BaseCli:
         Args:
             Exp : experiment description class
         """
-        self.ExpCls = Exp
+        self.ExpCls = Exp                                   
         self.args = self._get_parser(Exp).parse_args()
         self.env = RlaunchReplicaEnv(self.args.sync_bn, self.args.devices, self.args.find_unused_parameters)
 
