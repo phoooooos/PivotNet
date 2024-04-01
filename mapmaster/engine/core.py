@@ -28,9 +28,9 @@ class BaseCli:
         """
         self.ExpCls = Exp                                   
         self.args = self._get_parser(Exp).parse_args()
-        self.env = RlaunchReplicaEnv(self.args.sync_bn, self.args.devices, self.args.find_unused_parameters)
+        self.env = RlaunchReplicaEnv(self.args.sync_bn, self.args.devices, self.args.find_unused_parameters)        #调用environ.py中的RlaunchReplicaEnv类
 
-    @property
+    @property           #装饰器，将方法变成属性调用
     def exp(self):
         if not hasattr(self, "_exp"):
             exp = self.ExpCls(
@@ -41,17 +41,17 @@ class BaseCli:
             self._exp = exp
         return self._exp
 
-    def _get_parser(self, Exp):
-        parser = argparse.ArgumentParser()
-        parser = Exp.add_argparse_args(parser)
+    def _get_parser(self, Exp):                     #在__init__方法中调用
+        parser = argparse.ArgumentParser()          
+        parser = Exp.add_argparse_args(parser)  
         parser = self.add_argparse_args(parser)
         return parser
 
     @staticmethod
     def add_argparse_args(parser: argparse.ArgumentParser):
-        parser.add_argument("--eval", dest="eval", action="store_true", help="conduct evaluation only")
-        parser.add_argument("-te", "--train_and_eval", dest="train_and_eval", action="store_true", help="train+eval")
-        parser.add_argument("--find_unused_parameters", dest="find_unused_parameters", action="store_true")
+        parser.add_argument("--eval", dest="eval", action="store_true", help="conduct evaluation only")                 #仅eval
+        parser.add_argument("-te", "--train_and_eval", dest="train_and_eval", action="store_true", help="train+eval")   #train+eval
+        parser.add_argument("--find_unused_parameters", dest="find_unused_parameters", action="store_true")             
         parser.add_argument("-d", "--devices", default="0-7", type=str, help="device for training")
         parser.add_argument("--ckpt", type=str, default=None, help="checkpoint to start from or be evaluated")
         parser.add_argument("--pretrained_model", type=str, default=None, help="pretrained_model used by training")

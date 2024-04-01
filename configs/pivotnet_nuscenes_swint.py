@@ -60,9 +60,9 @@ class EXPConfig:    #描述{数据集,模型,优化器,调度器,指标}的配�
         ),
         bev_decoder=dict(
             arch_name="ipm_deformable_transformer",         #这块想看一下，这个可变尺寸transformer
-            net_kwargs=dict(
-                in_channels=[384, 768],
-                src_shape=[(32, 336), (16, 168)],
+            net_kwargs=dict(    
+                in_channels=[384, 768],                 #models/bev_decoder/deform_transformer/deform_transformer.py
+                src_shape=[(32, 336), (16, 168)],   
                 tgt_shape=(64, 32),
                 d_model=256,
                 n_heads=8,
@@ -179,7 +179,7 @@ class Exp(BaseExp):
     def __init__(self, batch_size_per_device=1, total_devices=8, max_epoch=60, **kwargs):
         super(Exp, self).__init__(batch_size_per_device, total_devices, max_epoch)
 
-        self.exp_config = EXPConfig()
+        self.exp_config = EXPConfig()   #设置config
         self.data_loader_workers = 1
         self.print_interval = 10
         self.dump_interval = 1
@@ -198,8 +198,8 @@ class Exp(BaseExp):
             self.exp_config.optimizer_setup[k] = self.exp_config.optimizer_setup[k] * lr_ratio_dict[total_devices]
         self.evaluation_save_dir = None
 
-    def _configure_model(self):
-        model = MapMaster(self.exp_config.model_setup)
+    def _configure_model(self): #配置模型
+        model = MapMaster(self.exp_config.model_setup)  #network.py中的MapMaster类，加载模型
         return model
 
     def _configure_train_dataloader(self):

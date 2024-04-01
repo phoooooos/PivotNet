@@ -35,7 +35,7 @@ class MapMaster(nn.Module):
         return __factory_dict__[arch_name](bkb_kwargs, fpn_kwargs, up_shape, ret_layers)
 
     @staticmethod
-    def create_bev_decoder(arch_name, net_kwargs):
+    def create_bev_decoder(arch_name, net_kwargs):          #__factory_dict__是一个字典，根据arch_name返回对应的类
         __factory_dict__ = {
             "transformer": bev_decoder.TransformerBEVDecoder,
             "ipm_deformable_transformer": bev_decoder.DeformTransformerBEVEncoder,
