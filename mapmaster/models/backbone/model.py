@@ -26,11 +26,11 @@ class ResNetBackbone(nn.Module):
 
 
 class EfficientNetBackbone(nn.Module):
-    def __init__(self, bkb_kwargs, fpn_kwarg=None, up_shape=None, ret_layers=1):
+    def __init__(self, bkb_kwargs, fpn_kwarg=None, up_shape=None, ret_layers=1):    
         super(EfficientNetBackbone, self).__init__()
         assert 0 < ret_layers < 4
         self.ret_layers = ret_layers
-        self.bkb = EfficientNet.from_pretrained(**bkb_kwargs)
+        self.bkb = EfficientNet.from_pretrained(**bkb_kwargs)   #加载预训练模型
         self.fpn = None if fpn_kwarg is None else BiFPN(**fpn_kwarg)
         self.up_shape = None if up_shape is None else up_shape
         del self.bkb._conv_head

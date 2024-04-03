@@ -302,8 +302,8 @@ class Exp(BaseExp):
     def test_step(self, batch):                             #测试,在train_epoch()方法中调用
         with torch.no_grad():
             batch["images"] = batch["images"].float().cuda()
-            outputs = self.model(batch)
-            results, dt_masks = self.model.module.post_processor(outputs["outputs"])
+            outputs = self.model(batch)                                                 #得到输出
+            results, dt_masks = self.model.module.post_processor(outputs["outputs"])    #后处理
         self.save_results(batch["extra_infos"]["token"], results, dt_masks)
 
     def save_results(self, tokens, results, dt_masks):      #Exp的保存结果方法，在test_step()方法中调用

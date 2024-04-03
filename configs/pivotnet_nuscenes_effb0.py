@@ -13,7 +13,7 @@ EXPConfig.model_setup["im_backbone"] = dict(
                 with_head=False,
                 with_cp=True,
                 norm_layer=nn.SyncBatchNorm,
-                weights_path="assets/weights/efficientnet-b0-355c32eb.pth",
+                weights_path="assets/weights/efficientnet-b0-355c32eb.pth", #权重参数路径包含在bkb_kwargs中
             ),
         )
 

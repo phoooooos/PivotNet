@@ -1,19 +1,15 @@
 import torch.nn as nn
 from mapmaster.models import backbone, bev_decoder, ins_decoder, output_head
-# os.environ['TORCH_DISTRIBUTED_DEBUG'] = "INFO"
-# warnings.filterwarnings('ignore')
 
-
-class MapMaster(nn.Module):
+class TestInfer(nn.Module):
     def __init__(self, model_config, *args, **kwargs):
-        super(MapMaster, self).__init__()
         self.im_backbone = self.create_backbone(**model_config["im_backbone"])
         self.bev_decoder = self.create_bev_decoder(**model_config["bev_decoder"])
         self.ins_decoder = self.create_ins_decoder(**model_config["ins_decoder"])
         self.output_head = self.create_output_head(**model_config["output_head"])
         self.post_processor = self.create_post_processor(**model_config["post_processor"])
 
-    def forward(self, inputs):      #inputs outputs是字典
+    def forward(self, inputs):
         outputs = {}
         outputs.update({k: inputs[k] for k in ["images", "extra_infos"]})
         outputs.update({k: inputs[k].float() for k in ["extrinsic", "intrinsic"]})

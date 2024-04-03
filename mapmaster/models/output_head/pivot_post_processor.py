@@ -302,7 +302,7 @@ class PivotMapPostProcessor(nn.Module):
                 })
         return targets_refactored
 
-    def post_processing(self, outputs):
+    def post_processing(self, outputs):     #dt_results->dt_mask
         batch_results, batch_masks = [], []
         batch_size = outputs["obj_logits"][-1][0].shape[0]
         for i in range(batch_size):
